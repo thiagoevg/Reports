@@ -4,11 +4,12 @@ import { AppController } from './app.controller'
 
 import { AppService } from './app.service'
 
-import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule } from '@nestjs/config'
 import environment from './config/environment.config'
-import { DatabaseConfig } from './config/database.config'
 import { environmentSchema } from '../environment/environmentSchema'
+import { RepositoryModule } from './repository/repository.module'
+import { VenuesController } from './venues/venues.controller';
+import { VenuesService } from './venues/venues.service';
 
 const { NODE_ENV } = process.env
 const prod = !NODE_ENV || NODE_ENV === 'production'
@@ -22,13 +23,9 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 			validationSchema: environmentSchema,
 		}),
 
-		MongooseModule.forRootAsync({
-			imports: [ConfigModule],
-			useClass: DatabaseConfig,
-		}),
-		MongooseModule.forFeature([]),
+		RepositoryModule,
 	],
-	controllers: [AppController],
-	providers: [AppService],
+	controllers: [AppController, VenuesController],
+	providers: [AppService, VenuesService],
 })
 export class AppModule {}

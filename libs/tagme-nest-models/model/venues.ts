@@ -1,6 +1,7 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types } from 'mongoose'
 import { Addresses } from './addresses'
+import { Menus } from './menus'
 
 /*
  * Main references for building this:
@@ -8,6 +9,10 @@ import { Addresses } from './addresses'
  * https://mongoosejs.com/docs/schematypes.html
  */
 
+export class BloominBrands {
+	@Prop()
+	storeCode: string
+}
 @Schema()
 export class Language {
 	@Prop({ required: true })
@@ -15,36 +20,25 @@ export class Language {
 	@Prop()
 	es?: string
 	@Prop()
-	en?: string
+	en: string
 	@Prop()
 	fr?: string
 }
 
-@Schema()
-export class ShippingPartners {
-	@Prop()
-	uberDirect?: string
-}
-
-export const ShippingPartnersSchema = SchemaFactory.createForClass(ShippingPartners)
-
-export enum VENUE_STATUS {
-	AVAILABLE = 'AVAILABLE',
-	UNAVAILABLE = 'UNAVAILABLE',
-	NOT_CONFIGURED = 'NOT_CONFIGURED'
-}
-
 export const LanguageSchema = SchemaFactory.createForClass(Language)
+
+export type VenuesDocument = Venues & Document
 
 @Schema({
 	collection: 'Venues',
 })
-export class Venues extends Document {
+export class Venues {
 	@Prop({ type: Types.ObjectId })
 	_id: Types.ObjectId
-
 	@Prop({ type: LanguageSchema, index: true })
 	name: Language
+	@Prop()
+	channels: Array<Types.ObjectId>
 	@Prop({ type: LanguageSchema })
 	descript: Language
 	@Prop({ type: LanguageSchema })
@@ -57,18 +51,21 @@ export class Venues extends Document {
 	@Prop({ ref: 'Addresses', enum: [Addresses, Types.ObjectId] })
 	address: Addresses
 	@Prop()
-	email: string
+	email: String
 	@Prop()
 	operationHours: Array<Object>
 	@Prop()
 	phone: Array<Object>
-	@Prop()
-	marketplaceMerchantIds: Map<string, string>
-	@Prop({ type: ShippingPartnersSchema })
-	shippingPartners: ShippingPartners
 
-	@Prop({ default: () => Date.now() })
+	@Prop({ ref: 'Menus', type: Types.ObjectId })
+	menu: Array<Types.ObjectId>
+	@Prop({
+		default: () => Date.now(),
+	})
 	created_at: Date
+
+	@Prop()
+	bloominBrands: BloominBrands
 
 	@Prop({})
 	updated_at: Date
