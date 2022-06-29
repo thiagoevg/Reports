@@ -8,7 +8,7 @@ import { OrdersMock, VenuesMock } from '../../repository/__mocks__/models-mock'
 import { TestUtils } from '../../utils/test-utils'
 import { VenuesModule } from './venues.module'
 import { VenuesService } from './venues.service'
-import { Orders } from 'libs/tagme-nest-models/model/order'
+import { Orders } from '../../../libs/tagme-nest-models/model/order'
 
 describe('VenuesService', () => {
 

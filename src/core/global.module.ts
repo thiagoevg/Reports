@@ -21,7 +21,7 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 			load: [environment],
 			validationSchema: environmentSchema,
 		}),
-		
+
 		// Abaixo do ConfigModule.forRoot as envs estarão disponívels
 		MongooseModule.forRootAsync({
 			imports: [ConfigModule],
@@ -40,6 +40,6 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 		}),
 	],
 
-	exports: [MongooseModule, CacheModule ],
+	exports: [MongooseModule, CacheModule],
 })
 export class GlobalModule {}

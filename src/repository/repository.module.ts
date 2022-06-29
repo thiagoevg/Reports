@@ -9,7 +9,7 @@ import { VenuesRepository } from './venuesRepository/venue.repository'
 	//      Caso este projeto seja usado como exemplo, siga o mesmo padrão, removendo todas as configurações de todos modulos que não sejam o global.
 	imports: [
 		// Providencie somente os models
-		
+
 		// Features do db Legacy
 		MongooseModule.forFeature(
 			[
@@ -20,16 +20,16 @@ import { VenuesRepository } from './venuesRepository/venue.repository'
 
 				{
 					name: Orders.name,
-					schema: OrdersSchema
-				}
+					schema: OrdersSchema,
+				},
 			],
-			process.env.LEGACY_MONGO_CONNECTION_NAME,
+			process.env.LEGACY_MONGO_CONNECTION_NAME
 		),
 
 		// Features do db MM
 		MongooseModule.forFeature(
 			[
-				// 
+				//
 			],
 			process.env.MONGO_CONNECTION_NAME
 		),

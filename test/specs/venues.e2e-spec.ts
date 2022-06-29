@@ -18,12 +18,13 @@ describe('VenuesModule (e2e)', () => {
 
 	//
 	beforeAll(async () => {
-		// Nesse teste, o ideal é mocar somente serviços externos ou indesejados. 
-		// Importante: Os modelos não são mocados. 
+		// Nesse teste, o ideal é mocar somente serviços externos ou indesejados.
+		// Importante: Os modelos não são mocados.
 
 		// O modulo criado utiliza uma conexão local com o banco em memoria criado no tempo de inicialização dos testes.
 		// Lembrando que no final de todos os testes e2e o banco em memoria sera finalizado.
-		const module = await TestUtils.createE2EModule(VenuesModule, 
+		const module = await TestUtils.createE2EModule(
+			VenuesModule,
 			// Esse parametro é opcional
 			// Coloque externos aqui os serviços que deseja mocar, ex:
 			[
@@ -56,7 +57,7 @@ describe('VenuesModule (e2e)', () => {
 
 		//
 		it(`/venues/email/${venueStub._id} (GET) should return the email`, async () => {
-			// 
+			//
 			await request(app.getHttpServer())
 				.get(`/venues/email/${venueStub._id.toString()}`)
 				.expect(200)

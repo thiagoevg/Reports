@@ -8,17 +8,15 @@ import { CacheService } from '../cache/cache.service'
 import { ModelMock } from '../repository/__mocks__/model-mock'
 import { genTestUri } from '../../test/global-e2e-consts'
 
-
 type ModuleType = Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
 
 export class TestUtils {
-
 	/**
 	 * Create a test module by modifying the desired models and services.
-	 * 
+	 *
 	 * @param importModule desired module
 	 * @param modelsName It is possible to inform which models will be mocked in this test, there are two ways to provide the mocks for the models, they are:
-	 * 	```"modelName" | ["modelName", mockObject]``` and can be interleaved, eg: ```[ModelA.name, ModelB.name, [ModelC.name, { }]]```. 
+	 * 	```"modelName" | ["modelName", mockObject]``` and can be interleaved, eg: ```[ModelA.name, ModelB.name, [ModelC.name, { }]]```.
 	 * The models that not provided will be mocked with and default ModelMock instance.
 	 * @param overrideProviders The desired services that will be mocked in the dependency tree of the ```importModule```, eg: ```[[ServiceTest, ServiceTestMock], ..]```
 	 * @returns Return the test module
@@ -26,7 +24,7 @@ export class TestUtils {
 	static async createMockedModelsModule(
 		importModule: ModuleType,
 		modelsName: (string | [string, Type<ModelMock<any>>])[] = [],
-		overrideProviders: [any, any][] = [],
+		overrideProviders: [any, any][] = []
 	) {
 		const builder: TestingModuleBuilder = Test.createTestingModule({
 			providers: [],
@@ -45,14 +43,13 @@ export class TestUtils {
 			.useClass(ConfigServiceMock)
 			.overrideProvider(CacheService)
 			.useClass(CacheServiceMock)
-			.useMocker((token) => {
-				if(token === "DatabaseConnection") {
+			.useMocker(token => {
+				if (token === 'DatabaseConnection') {
 					return {
 						model: () => {
 							return new ModelMock()
-						}
+						},
 					}
-	
 				}
 			})
 		for (const overrideProvider of overrideProviders) {
@@ -72,7 +69,7 @@ export class TestUtils {
 
 	/**
 	 * Create a e2e test module mocking desired services.
-	 * 
+	 *
 	 * @param importModule desired module
 	 * @param overrideProviders The desired services that will be mocked in the dependency tree of the ```importModule```, eg: ```[[ServiceTest, ServiceTestMock], ..]```
 	 * @returns Return the test module
