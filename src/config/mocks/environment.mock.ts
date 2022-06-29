@@ -2,9 +2,7 @@ const fakeHost = 'http://localhost:8080'
 const fakeApiUser = 'shdksjdhksjdh'
 const fakeApikey = '0987654321'
 
-const env = {
-
-}
+const env = {}
 
 export class ConfigServiceMock {
 	get(key: string) {

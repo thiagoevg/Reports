@@ -1,4 +1,3 @@
-
 //
 import { getModelToken } from '@nestjs/mongoose'
 import { TestingModule } from '@nestjs/testing'
@@ -11,7 +10,6 @@ import { VenuesService } from './venues.service'
 import { Orders } from '../../../libs/tagme-nest-models/model/order'
 
 describe('VenuesService', () => {
-
 	let service: VenuesService
 	let venuesModel: VenuesMock
 
@@ -19,23 +17,24 @@ describe('VenuesService', () => {
 	beforeAll(async () => {
 		// Pra realizar o teste do "VenuesService" é necessario que o nest crie a arvore de dependencia do "VenuesModule".
 		// O método utilitario abaixo cria o modulo de teste utilizando como raiz o "VenuesModule".
-		const module: TestingModule = await TestUtils.createMockedModelsModule(VenuesModule, 
-			// Os dois argumentos a seguir são opcionais, como mostra o exemplo './venues.controller.spec.ts'. 
-			// Caso queiram apagar, na teoria não devera causar nenhum erro porque o método utilitario tentara sozinho mocar 
+		const module: TestingModule = await TestUtils.createMockedModelsModule(
+			VenuesModule,
+			// Os dois argumentos a seguir são opcionais, como mostra o exemplo './venues.controller.spec.ts'.
+			// Caso queiram apagar, na teoria não devera causar nenhum erro porque o método utilitario tentara sozinho mocar
 			// todas as dependencias necessárias. Mas dependendo da complexidade do teste, provavelmente seja necessário utilisar essas opções.
 
 			// Coloque aqui todos os modelos que queira mocar, lembre de usar uma classe que extenda 'ModelMock'. A lista também aceita
 			// nomes, nesse caso o nome somente reforçaria a criação de um modelo padrão (ModelMock) pro determinado modelo. ex: [Orders.name, [Venues.name, VenuesMock]]
 			[
 				[Venues.name, VenuesMock],
-				[Orders.name, OrdersMock]
-			], 
+				[Orders.name, OrdersMock],
+			],
 
 			// Coloque aqui os serviços que deseja mocar, ex:
 			[
 				// [UserService, { getUserById: () => "teste" }]
 			]
-		);
+		)
 
 		service = module.get<VenuesService>(VenuesService)
 
@@ -48,29 +47,28 @@ describe('VenuesService', () => {
 	it('service should be defined', () => {
 		expect(service).toBeDefined()
 	})
-	
+
 	//
 	describe('with stub sample', () => {
-
 		// O StubFactory é somento um padrão pra criar esboços para serem utilizados nos testes
-		const venueStub = StubFactory.createForVenue();
+		const venueStub = StubFactory.createForVenue()
 
 		// O model mocado 'venuesModel' é do tipo 'ModelMock', o método 'setEntity' alterada a entidade mocada dentro do model,
 		// qualquer acesso futuro aos métodos (find, findOne, etc..) que sera efetuado pelo venueRepository retorna no final a entidade setada aqui.
-		beforeAll( () => {
+		beforeAll(() => {
 			venuesModel.setEntity(venueStub)
 		})
 
 		//
 		describe('when get email', () => {
-			let email: string;
+			let email: string
 
 			beforeAll(async () => {
 				// Espiando o método "findOne" do model antes de realizar a chamada do service
-				jest.spyOn(venuesModel, "findOne")
+				jest.spyOn(venuesModel, 'findOne')
 				// Realizando a chamada do método que estamos interessados em testar
 				// internamente o venuesRepository vai realizar a busca pelo id e vai bater no 'venuesModel' mocado assim retornando o esboço
-				// da entidade que forçamos acima e por final deverá retornar o email desse esboço. 
+				// da entidade que forçamos acima e por final deverá retornar o email desse esboço.
 				email = await service.getVenueEmail(venueStub._id.toString())
 			})
 
@@ -84,7 +82,7 @@ describe('VenuesService', () => {
 			})
 
 			it('should be equal', () => {
-				expect(email).toEqual("sante13restaurante@gmail.com")
+				expect(email).toEqual('sante13restaurante@gmail.com')
 			})
 		})
 	})

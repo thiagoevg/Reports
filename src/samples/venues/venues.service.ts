@@ -4,18 +4,16 @@ import { VenuesRepository } from '../../repository/venuesRepository/venue.reposi
 
 @Injectable()
 export class VenuesService {
+	constructor(private readonly venuesRepository: VenuesRepository) {}
 
-  constructor(private readonly venuesRepository: VenuesRepository) {}
+	async getVenueEmail(venueId: string): Promise<string> {
+		const venue = await this.venuesRepository.findOne({
+			filter: { _id: new Types.ObjectId(venueId) },
+			projection: {
+				email: true,
+			},
+		})
 
-  async getVenueEmail(venueId: string): Promise<string> {
-
-    const venue = await this.venuesRepository.findOne({
-      filter: {_id: new Types.ObjectId(venueId)},
-      projection: {
-        email: true
-      }
-    })
-
-    return venue.email.toString();
-  }
+		return venue.email.toString()
+	}
 }

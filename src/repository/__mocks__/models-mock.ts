@@ -1,6 +1,6 @@
-import { Orders } from "../../../libs/tagme-nest-models/model/order";
-import { Venues } from "../../../libs/tagme-nest-models/model/venues";
-import { ModelMock } from "./model-mock";
+import { Orders } from '../../../libs/tagme-nest-models/model/order'
+import { Venues } from '../../../libs/tagme-nest-models/model/venues'
+import { ModelMock } from './model-mock'
 
 // Mocks opcionais para tipagens
 
