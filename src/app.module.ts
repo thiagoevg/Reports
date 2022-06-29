@@ -1,31 +1,19 @@
 import { Module } from '@nestjs/common'
+// IMPORTANTE: Importar esse modulo antes de qualuqer outra importação do projeto, pra evitar problemas com o env
+import { GlobalModule } from './core/global.module'
+// _________ Abaixo do modulo Global
+import { SimpleAppModule } from './samples/simple-app/simple-app.module'
+import { VenuesModule } from './samples/venues/venues.module'
 
-import { AppController } from './app.controller'
 
-import { AppService } from './app.service'
-
-import { ConfigModule } from '@nestjs/config'
-import environment from './config/environment.config'
-import { environmentSchema } from '../environment/environmentSchema'
-import { RepositoryModule } from './repository/repository.module'
-import { VenuesController } from './venues/venues.controller';
-import { VenuesService } from './venues/venues.service';
-
-const { NODE_ENV } = process.env
-const prod = !NODE_ENV || NODE_ENV === 'production'
-
+//
 @Module({
 	imports: [
-		ConfigModule.forRoot({
-			envFilePath: !prod ? `./environment/${process.env.NODE_ENV}.env` : '',
-			isGlobal: true,
-			load: [environment],
-			validationSchema: environmentSchema,
-		}),
-
-		RepositoryModule,
+		GlobalModule,
+		SimpleAppModule,
+		VenuesModule
 	],
-	controllers: [AppController, VenuesController],
-	providers: [AppService, VenuesService],
+	controllers: [],
+	providers: [],
 })
 export class AppModule {}
