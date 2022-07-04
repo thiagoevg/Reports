@@ -1,29 +1,37 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
-import { DatabaseConfig } from '../config/database.config'
-
-// Models
+import { Orders, OrdersSchema } from '../../libs/tagme-nest-models/model/order'
 import { Venues, VenuesSchema } from '../../libs/tagme-nest-models/model/venues'
-
-// Repositories
-import { VenuesRepository } from '../venues/repositories/venue.repository'
+import { VenuesRepository } from './venuesRepository/venue.repository'
 
 @Module({
+	// OBS: Não realizar nenhuma configuração por aqui, por exemplo: MongooseModule.forRootAsync({...
+	//      Caso este projeto seja usado como exemplo, siga o mesmo padrão, removendo todas as configurações de todos modulos que não sejam o global.
 	imports: [
-		MongooseModule.forRootAsync({
-			imports: [ConfigModule],
-			useClass: DatabaseConfig,
-			connectionName: 'Tagme',
-		}),
+		// Providencie somente os models
+
+		// Features do db Legacy
 		MongooseModule.forFeature(
 			[
 				{
 					name: Venues.name,
 					schema: VenuesSchema,
 				},
+
+				{
+					name: Orders.name,
+					schema: OrdersSchema,
+				},
 			],
-			'Tagme'
+			process.env.LEGACY_MONGO_CONNECTION_NAME
+		),
+
+		// Features do db MM
+		MongooseModule.forFeature(
+			[
+				//
+			],
+			process.env.MONGO_CONNECTION_NAME
 		),
 	],
 	providers: [VenuesRepository],
