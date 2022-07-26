@@ -11,10 +11,6 @@
 		"outDir": "./dist",
 		"baseUrl": "./",
 		"incremental": true,
-		"esModuleInterop": true,
-		"paths": {
-			"@tagmedev/tagme-nest-models": ["libs/tagme-nest-models/src"],
-			"@tagmedev/tagme-nest-models/*": ["libs/tagme-nest-models/src/*"]
-		}
+		"esModuleInterop": true
 	}
 }
