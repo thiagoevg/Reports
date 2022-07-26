@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { Venues, VenuesDocument } from '@tagmedev/tagme-nest-models'
 import { Model } from 'mongoose'
 import { InjectLegacyModel } from '../../core/legacyDatabase-options.factory'
-import { Venues, VenuesDocument } from '../../../libs/tagme-nest-models/model/venues'
 import { FindProps, UpdateProps } from '../../repository/interfaces.repositories'
 
 @Injectable()

@@ -2,12 +2,11 @@
 import { getModelToken } from '@nestjs/mongoose'
 import { TestingModule } from '@nestjs/testing'
 import { StubFactory } from '../../repository/__mocks__/stubs-data'
-import { Venues } from '../../../libs/tagme-nest-models/model/venues'
 import { OrdersMock, VenuesMock } from '../../repository/__mocks__/models-mock'
 import { TestUtils } from '../../utils/test-utils'
 import { VenuesModule } from './venues.module'
 import { VenuesService } from './venues.service'
-import { Orders } from '../../../libs/tagme-nest-models/model/order'
+import { Orders, Venues } from '@tagmedev/tagme-nest-models'
 
 describe('VenuesService', () => {
 	let service: VenuesService

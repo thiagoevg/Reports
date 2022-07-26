@@ -1,5 +1,5 @@
+import { Venues } from '@tagmedev/tagme-nest-models'
 import { Types } from 'mongoose'
-import { Venues } from '../../../libs/tagme-nest-models/model/venues'
 
 // Classe utilizada para gerar esboços de todos os tipos para os testes
 export class StubFactory {
