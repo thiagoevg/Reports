@@ -7,6 +7,7 @@ import { CacheServiceMock, ConfigServiceMock } from '../config/mocks/environment
 import { CacheService } from '../cache/cache.service'
 import { ModelMock } from '../repository/__mocks__/model-mock'
 import { genTestUri } from '../../test/global-e2e-consts'
+import { getLegacyConnectionToken, getMMConnectionToken } from '@tagmedev/tagme-nest-models'
 
 type ModuleType = Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
 
@@ -44,7 +45,7 @@ export class TestUtils {
 			.overrideProvider(CacheService)
 			.useClass(CacheServiceMock)
 			.useMocker(token => {
-				if (token === 'DatabaseConnection') {
+				if (token === getLegacyConnectionToken() || token === getMMConnectionToken()) {
 					return {
 						model: () => {
 							return new ModelMock()
@@ -58,9 +59,9 @@ export class TestUtils {
 
 		for (const modelName of modelsName) {
 			if (typeof modelName === 'string') {
-				builder.overrideProvider(getModelToken(modelName)).useClass(ModelMock)
+				builder.overrideProvider(modelName).useClass(ModelMock)
 			} else {
-				builder.overrideProvider(getModelToken(modelName[0])).useClass(modelName[1])
+				builder.overrideProvider(modelName[0]).useClass(modelName[1])
 			}
 		}
 

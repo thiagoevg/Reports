@@ -10,10 +10,10 @@ import { VenuesRepository } from './venuesRepository/venue.repository'
 		// Providencie somente os models
 
 		// Features for Legacy
-		TagmeNestModelsModule.forLegacyFeatures(process.env.LEGACY_MONGO_CONNECTION_NAME),
+		TagmeNestModelsModule.forLegacyFeatures(),
 
 		// Features for Menu Manager
-		TagmeNestModelsModule.forMMFeatures(process.env.MONGO_CONNECTION_NAME),
+		TagmeNestModelsModule.forMMFeatures(),
 	],
 	providers: [VenuesRepository],
 	exports: [VenuesRepository],
