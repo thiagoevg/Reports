@@ -7,9 +7,15 @@ import { CacheServiceMock, ConfigServiceMock } from '../config/mocks/environment
 import { CacheService } from '../cache/cache.service'
 import { ModelMock } from '../repository/__mocks__/model-mock'
 import { genTestUri } from '../../test/global-e2e-consts'
-import { getLegacyConnectionToken, getMMConnectionToken } from '@tagmedev/tagme-nest-models'
+import { getLegacyConnectionToken, getMMConnectionToken, TagmeNestModelsModule } from '@tagmedev/tagme-nest-models'
 
 type ModuleType = Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
+
+export enum E2EConnectionType {
+	Legacy = 'Legacy',
+	MenuManager = 'MenuManager',
+	All = 'All'
+}
 
 export class TestUtils {
 	/**
@@ -77,11 +83,36 @@ export class TestUtils {
 	 */
 	static async createE2EModule(
 		importModule: ModuleType,
-		overrideProviders: [any, any][]
+		overrideProviders: [any, any][],
+		connection: E2EConnectionType = E2EConnectionType.All
 	): Promise<TestingModule> {
-		//
+
+		// Prepare module
+		const mongoModules: DynamicModule[] = [];
+
+		if([E2EConnectionType.Legacy, E2EConnectionType.All].indexOf(connection) !== -1) {
+			mongoModules.push(TagmeNestModelsModule.forLegacyRoot('e2eTest1', {
+				uri: 'uri',
+				retryAttempts: 'retryAttempts',
+				retryDelay: 'retryDelay',
+			}, true));
+		} 
+		
+		if([E2EConnectionType.MenuManager, E2EConnectionType.All].indexOf(connection) !== -1) {
+			mongoModules.push(TagmeNestModelsModule.forMMRoot('e2eTest2', {
+				uri: 'uri',
+				retryAttempts: 'retryAttempts',
+				retryDelay: 'retryDelay',
+			}, true));
+		}
 
 		//
+		const mockedConfig = {
+			uri: genTestUri(),
+			retryDelay: 2000,
+			retryAttempts: 3,
+		};
+
 		const builder: TestingModuleBuilder = Test.createTestingModule({
 			providers: [],
 			imports: [
@@ -90,25 +121,24 @@ export class TestUtils {
 					maxRedirects: 5,
 				}),
 				ConfigModule.forRoot({
-					isGlobal: true,
+					isGlobal: true
 				}),
 				CacheModule.register({
 					isGlobal: true,
 				}),
-				MongooseModule.forRootAsync({
-					useFactory: async () => {
-						return {
-							uri: genTestUri(),
-							retryDelay: 2000,
-							retryAttempts: 3,
-						}
-					},
-				}),
+				...mongoModules,
 				importModule,
 			],
+			exports: [
+				TagmeNestModelsModule
+			]
 		})
 			.overrideProvider(ConfigService)
-			.useClass(ConfigServiceMock)
+			.useValue({
+				get(key: string) {
+					return mockedConfig[key]
+				}
+			})
 			.overrideProvider(CacheService)
 			.useClass(CacheServiceMock)
 
