@@ -1,11 +1,9 @@
 import { CacheModule, Global, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { MongooseModule } from '@nestjs/mongoose'
 import environment from '../config/environment.config'
 import { environmentSchema } from '../../environment/environmentSchema'
-import { LegacyDatabaseOptionsFactory } from './legacyDatabase-options.factory'
-import { DatabaseOptionsFactory } from './database-options.factory'
 import { RedisOptionsFactory } from './cache-options.factory'
+import { TagmeNestModelsModule } from '@tagmedev/tagme-nest-models'
 
 //
 const { NODE_ENV } = process.env
@@ -23,16 +21,16 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 		}),
 
 		// Abaixo do ConfigModule.forRoot as envs estarão disponívels
-		MongooseModule.forRootAsync({
-			imports: [ConfigModule],
-			useClass: LegacyDatabaseOptionsFactory,
-			connectionName: process.env.LEGACY_MONGO_CONNECTION_NAME,
+		// after Config.forRoot(..)
+		TagmeNestModelsModule.forLegacyRoot(process.env.LEGACY_MONGO_CONNECTION_NAME, {
+			uri: 'legacyDatabase.uri',
+			retryAttempts: 'database.retryAttempts',
+			retryDelay: 'database.retryDelay',
 		}),
-
-		MongooseModule.forRootAsync({
-			imports: [ConfigModule],
-			useClass: DatabaseOptionsFactory,
-			connectionName: process.env.MONGO_CONNECTION_NAME,
+		TagmeNestModelsModule.forMMRoot(process.env.MONGO_CONNECTION_NAME, {
+			uri: 'MMDatabase.uri',
+			retryAttempts: 'database.retryAttempts',
+			retryDelay: 'database.retryDelay',
 		}),
 
 		CacheModule.registerAsync({
@@ -40,6 +38,6 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 		}),
 	],
 
-	exports: [MongooseModule, CacheModule],
+	exports: [TagmeNestModelsModule, CacheModule],
 })
 export class GlobalModule {}

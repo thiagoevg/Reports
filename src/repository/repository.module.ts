@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
-import { Orders, OrdersSchema } from '../../libs/tagme-nest-models/model/order'
-import { Venues, VenuesSchema } from '../../libs/tagme-nest-models/model/venues'
+import { TagmeNestModelsModule } from '@tagmedev/tagme-nest-models'
 import { VenuesRepository } from './venuesRepository/venue.repository'
 
 @Module({
@@ -10,29 +9,11 @@ import { VenuesRepository } from './venuesRepository/venue.repository'
 	imports: [
 		// Providencie somente os models
 
-		// Features do db Legacy
-		MongooseModule.forFeature(
-			[
-				{
-					name: Venues.name,
-					schema: VenuesSchema,
-				},
+		// Features for Legacy
+		TagmeNestModelsModule.forLegacyFeatures(),
 
-				{
-					name: Orders.name,
-					schema: OrdersSchema,
-				},
-			],
-			process.env.LEGACY_MONGO_CONNECTION_NAME
-		),
-
-		// Features do db MM
-		MongooseModule.forFeature(
-			[
-				//
-			],
-			process.env.MONGO_CONNECTION_NAME
-		),
+		// Features for Menu Manager
+		TagmeNestModelsModule.forMMFeatures(),
 	],
 	providers: [VenuesRepository],
 	exports: [VenuesRepository],

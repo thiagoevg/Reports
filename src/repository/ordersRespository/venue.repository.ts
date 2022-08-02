@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { Orders } from '../../../libs/tagme-nest-models/model/order'
+import { InjectLegacyModel, Orders } from '@tagmedev/tagme-nest-models'
 import { Model } from 'mongoose'
-import { InjectLegacyModel } from '../../core/legacyDatabase-options.factory'
 
 @Injectable()
 export class OrdersRepository {

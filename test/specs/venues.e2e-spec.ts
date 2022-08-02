@@ -2,12 +2,11 @@ import { INestApplication } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import request from 'supertest'
 import { Model } from 'mongoose'
-import { getModelToken } from '@nestjs/mongoose'
-import { TestUtils } from '../../src/utils/test-utils'
-import { Venues } from '../../libs/tagme-nest-models/model/venues'
+import { E2EConnectionType, TestUtils } from '../../src/utils/test-utils'
 
 import { StubFactory } from '../../src/repository/__mocks__/stubs-data'
 import { VenuesModule } from '../../src/samples/venues/venues.module'
+import { getLegacyModelToken, Venues } from '@tagmedev/tagme-nest-models'
 
 describe('VenuesModule (e2e)', () => {
 	let app: INestApplication
@@ -29,7 +28,8 @@ describe('VenuesModule (e2e)', () => {
 			// Coloque externos aqui os serviços que deseja mocar, ex:
 			[
 				// [ PartnerApiService, PartnerApiServiceMock ]
-			]
+			],
+			E2EConnectionType.All // Because the Repository make connections with legacy and menu manager database models
 		)
 
 		//
@@ -37,7 +37,7 @@ describe('VenuesModule (e2e)', () => {
 
 		// Captura o modelo do venus
 		// obs: (Nesse testes os modelos não são mocados, todos possuem conexão com banco)
-		venuesModel = module.get<Model<Venues>>(getModelToken(Venues.name))
+		venuesModel = module.get<Model<Venues>>(getLegacyModelToken(Venues.name))
 
 		// Esse serviço é providenciado por padrão na criação do modulo de testes
 		httpService = module.get<HttpService>(HttpService)

@@ -1,5 +1,4 @@
-import { Orders } from '../../../libs/tagme-nest-models/model/order'
-import { Venues } from '../../../libs/tagme-nest-models/model/venues'
+import { Orders, Venues } from '@tagmedev/tagme-nest-models';
 import { ModelMock } from './model-mock'
 
 // Mocks opcionais para tipagens

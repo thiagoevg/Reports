@@ -2,12 +2,11 @@
 import { getModelToken } from '@nestjs/mongoose'
 import { TestingModule } from '@nestjs/testing'
 import { StubFactory } from '../../repository/__mocks__/stubs-data'
-import { Venues } from '../../../libs/tagme-nest-models/model/venues'
 import { OrdersMock, VenuesMock } from '../../repository/__mocks__/models-mock'
 import { TestUtils } from '../../utils/test-utils'
 import { VenuesModule } from './venues.module'
 import { VenuesService } from './venues.service'
-import { Orders } from '../../../libs/tagme-nest-models/model/order'
+import { getLegacyModelToken, Orders, Venues } from '@tagmedev/tagme-nest-models'
 
 describe('VenuesService', () => {
 	let service: VenuesService
@@ -26,8 +25,8 @@ describe('VenuesService', () => {
 			// Coloque aqui todos os modelos que queira mocar, lembre de usar uma classe que extenda 'ModelMock'. A lista também aceita
 			// nomes, nesse caso o nome somente reforçaria a criação de um modelo padrão (ModelMock) pro determinado modelo. ex: [Orders.name, [Venues.name, VenuesMock]]
 			[
-				[Venues.name, VenuesMock],
-				[Orders.name, OrdersMock],
+				[getLegacyModelToken(Venues.name), VenuesMock],
+				[getLegacyModelToken(Orders.name), OrdersMock],
 			],
 
 			// Coloque aqui os serviços que deseja mocar, ex:
@@ -40,7 +39,7 @@ describe('VenuesService', () => {
 
 		// Captura o model que foi injetetado pra ser utilizado em conjunto com os testes. Isso é, antes de chamar qualquer método do 'service',
 		// esse model será utilizado pra preparar o campo para assim o service 'pensar' que esta trabalhando com um model real.
-		venuesModel = module.get<VenuesMock>(getModelToken(Venues.name))
+		venuesModel = module.get<VenuesMock>(getLegacyModelToken(Venues.name))
 	})
 
 	//

@@ -1,18 +1,6 @@
 {
 	"collection": "@nestjs/schematics",
 	"sourceRoot": "src",
-	"projects": {
-		"tagme-nest-models": {
-			"type": "library",
-			"root": "libs/tagme-nest-models",
-			"entryFile": "index",
-			"sourceRoot": "libs/tagme-nest-models/src",
-			"compilerOptions": {
-				"tsConfigPath": "libs/tagme-nest-models/tsconfig.lib.json"
-			}
-		}
-	},
-
 	"compilerOptions": {
 		"webpack": true,
 		"deleteOutDir": true,
