@@ -5,6 +5,7 @@ import { GlobalModule } from './core/global.module'
 import { SimpleAppModule } from './samples/simple-app/simple-app.module'
 import { VenuesModule } from './samples/venues/venues.module'
 
+
 //
 @Module({
 	imports: [GlobalModule, SimpleAppModule, VenuesModule],

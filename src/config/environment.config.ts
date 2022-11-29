@@ -22,5 +22,9 @@ export default () => ({
 		pass: process.env.CACHE_PASS,
 	},
 
+	datadog: {
+		apiKey: process.env.DATADOG_API_KEY,
+	},
+
 	venuesDefaultTz: 'America/Sao_Paulo',
 })

@@ -2,15 +2,18 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
-import { AllExceptionsFilter } from './all-exceptions.filter'
+import { InternalLoggerService } from '@tagmedev/tagme-nest-common'
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule)
+	const app = await NestFactory.create(AppModule, { bufferLogs: true })
 	const configService = app.get(ConfigService)
 	const port = configService.get('PORT')
-	const { httpAdapter } = app.get(HttpAdapterHost)
-	app.useGlobalFilters(new AllExceptionsFilter(httpAdapter))
+	
+	//
+	const logger = app.get(InternalLoggerService);
+	app.useLogger(logger);
 
+	//
 	const options = new DocumentBuilder()
 		.setTitle('TagMe Seed')
 		.setDescription('Seed of TagMe Applications')

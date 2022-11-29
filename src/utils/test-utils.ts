@@ -7,14 +7,20 @@ import { CacheServiceMock, ConfigServiceMock } from '../config/mocks/environment
 import { CacheService } from '../cache/cache.service'
 import { ModelMock } from '../repository/__mocks__/model-mock'
 import { genTestUri } from '../../test/global-e2e-consts'
-import { getLegacyConnectionToken, getMMConnectionToken, TagmeNestModelsModule } from '@tagmedev/tagme-nest-models'
+import {
+	getLegacyConnectionToken,
+	getMMConnectionToken,
+	TagmeNestModelsModule,
+} from '@tagmedev/tagme-nest-models'
+import pino from 'pino'
+import { LoggerDispatchStrategy, LoggerModule } from '@tagmedev/tagme-nest-common'
 
 type ModuleType = Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
 
 export enum E2EConnectionType {
 	Legacy = 'Legacy',
 	MenuManager = 'MenuManager',
-	All = 'All'
+	All = 'All',
 }
 
 export class TestUtils {
@@ -44,6 +50,21 @@ export class TestUtils {
 					isGlobal: true,
 				}),
 				importModule,
+				LoggerModule.forRoot(
+					{
+						isGlobal: true,
+
+						pinoHttp: {
+							logger: pino({ enabled: false }),
+						},
+
+						contextBundle: {
+							strategy: {
+								onDispatch: LoggerDispatchStrategy.DISCARD,
+							},
+						},
+					}
+				),
 			],
 		})
 			.overrideProvider(ConfigService)
@@ -86,24 +107,35 @@ export class TestUtils {
 		overrideProviders: [any, any][],
 		connection: E2EConnectionType = E2EConnectionType.All
 	): Promise<TestingModule> {
-
 		// Prepare module
-		const mongoModules: DynamicModule[] = [];
+		const mongoModules: DynamicModule[] = []
 
-		if([E2EConnectionType.Legacy, E2EConnectionType.All].indexOf(connection) !== -1) {
-			mongoModules.push(TagmeNestModelsModule.forLegacyRoot('e2eTest1', {
-				uri: 'uri',
-				retryAttempts: 'retryAttempts',
-				retryDelay: 'retryDelay',
-			}, true));
-		} 
-		
-		if([E2EConnectionType.MenuManager, E2EConnectionType.All].indexOf(connection) !== -1) {
-			mongoModules.push(TagmeNestModelsModule.forMMRoot('e2eTest2', {
-				uri: 'uri',
-				retryAttempts: 'retryAttempts',
-				retryDelay: 'retryDelay',
-			}, true));
+		if ([E2EConnectionType.Legacy, E2EConnectionType.All].indexOf(connection) !== -1) {
+			mongoModules.push(
+				TagmeNestModelsModule.forLegacyRoot(
+					'e2eTest1',
+					{
+						uri: 'uri',
+						retryAttempts: 'retryAttempts',
+						retryDelay: 'retryDelay',
+					},
+					true
+				)
+			)
+		}
+
+		if ([E2EConnectionType.MenuManager, E2EConnectionType.All].indexOf(connection) !== -1) {
+			mongoModules.push(
+				TagmeNestModelsModule.forMMRoot(
+					'e2eTest2',
+					{
+						uri: 'uri',
+						retryAttempts: 'retryAttempts',
+						retryDelay: 'retryDelay',
+					},
+					true
+				)
+			)
 		}
 
 		//
@@ -111,7 +143,7 @@ export class TestUtils {
 			uri: genTestUri(),
 			retryDelay: 2000,
 			retryAttempts: 3,
-		};
+		}
 
 		const builder: TestingModuleBuilder = Test.createTestingModule({
 			providers: [],
@@ -121,23 +153,36 @@ export class TestUtils {
 					maxRedirects: 5,
 				}),
 				ConfigModule.forRoot({
-					isGlobal: true
+					isGlobal: true,
 				}),
 				CacheModule.register({
 					isGlobal: true,
 				}),
+				LoggerModule.forRoot(
+					{
+						isGlobal: true,
+						
+						pinoHttp: {
+							logger: pino({ enabled: false }),
+						},
+
+						contextBundle: {
+							strategy: {
+								onDispatch: LoggerDispatchStrategy.DISCARD,
+							},
+						},
+					}
+				),
 				...mongoModules,
 				importModule,
 			],
-			exports: [
-				TagmeNestModelsModule
-			]
+			exports: [TagmeNestModelsModule],
 		})
 			.overrideProvider(ConfigService)
 			.useValue({
 				get(key: string) {
 					return mockedConfig[key]
-				}
+				},
 			})
 			.overrideProvider(CacheService)
 			.useClass(CacheServiceMock)
