@@ -50,21 +50,19 @@ export class TestUtils {
 					isGlobal: true,
 				}),
 				importModule,
-				LoggerModule.forRoot(
-					{
-						isGlobal: true,
+				LoggerModule.forRoot({
+					isGlobal: true,
 
-						pinoHttp: {
-							logger: pino({ enabled: false }),
-						},
+					pinoHttp: {
+						logger: pino({ enabled: false }),
+					},
 
-						contextBundle: {
-							strategy: {
-								onDispatch: LoggerDispatchStrategy.DISCARD,
-							},
+					contextBundle: {
+						strategy: {
+							onDispatch: LoggerDispatchStrategy.DISCARD,
 						},
-					}
-				),
+					},
+				}),
 			],
 		})
 			.overrideProvider(ConfigService)
@@ -158,21 +156,19 @@ export class TestUtils {
 				CacheModule.register({
 					isGlobal: true,
 				}),
-				LoggerModule.forRoot(
-					{
-						isGlobal: true,
-						
-						pinoHttp: {
-							logger: pino({ enabled: false }),
-						},
+				LoggerModule.forRoot({
+					isGlobal: true,
 
-						contextBundle: {
-							strategy: {
-								onDispatch: LoggerDispatchStrategy.DISCARD,
-							},
+					pinoHttp: {
+						logger: pino({ enabled: false }),
+					},
+
+					contextBundle: {
+						strategy: {
+							onDispatch: LoggerDispatchStrategy.DISCARD,
 						},
-					}
-				),
+					},
+				}),
 				...mongoModules,
 				importModule,
 			],

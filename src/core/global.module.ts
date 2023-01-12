@@ -4,7 +4,6 @@ import environment from '../config/environment.config'
 import { environmentSchema } from '../../environment/environmentSchema'
 import { RedisOptionsFactory } from './cache-options.factory'
 import { TagmeNestModelsModule } from '@tagmedev/tagme-nest-models'
-import { IncomingMessage, ServerResponse } from 'http'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { GlobalExceptionFilter } from './global-exception.filter'
 import { GlobalInterceptor } from './global-http-interceptor'
@@ -15,6 +14,8 @@ import {
 	LoggerOnErrorStrategy,
 	LoggerParams,
 } from '@tagmedev/tagme-nest-common'
+import { LOGGER_ENCRYPT_KEY_CREDENTIALS } from './security/security.provider'
+import { SecurityModule } from './security/security.module'
 
 //
 const { NODE_ENV } = process.env
@@ -47,11 +48,11 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 		CacheModule.registerAsync({
 			useClass: RedisOptionsFactory,
 		}),
-
 		//
 		LoggerModule.forRootAsync({
 			isGlobal: false,
-			useFactory: (config: ConfigService): LoggerParams => {
+			imports: [SecurityModule],
+			useFactory: (config: ConfigService, pubKey: string): LoggerParams => {
 				return {
 					/** don't change this */
 					pinoHttp: {
@@ -66,13 +67,24 @@ const prod = !NODE_ENV || NODE_ENV === 'production'
 							onError: LoggerOnErrorStrategy.DISPATCH,
 						},
 
-						stream: {
-							datadogApiKey: config.get('datadog.apiKey'),
+						stream: !prod
+							? null
+							: {
+									datadogApiKey: config.get('datadog.apiKey'),
+									datadogServiceName: config.get('datadog.serviceName'),
+							  },
+					},
+
+					options: {
+						security: {
+							publicKey: pubKey,
+							encoding: 'base64',
+							forceMessageEncryption: false,
 						},
 					},
 				}
 			},
-			inject: [ConfigService],
+			inject: [ConfigService, LOGGER_ENCRYPT_KEY_CREDENTIALS],
 		}),
 	],
 

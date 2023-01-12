@@ -15,7 +15,11 @@ export const environmentSchema = Joi.object({
 
 	CACHE_URI: Joi.string().required(),
 	CACHE_PORT: Joi.number().required(),
-	CACHE_PASS: Joi.string().required()
+	CACHE_PASS: Joi.string().required(),
+
+	DATADOG_API_KEY: Joi.string(),
+	DATADOG_SERVICE_NAME: Joi.string(),
+
+	PUBLIC_KEY_NAME: Joi.string().required(),
+	KEYVAULT_URL: Joi.string().required(),
 })
-
-

@@ -11,4 +11,10 @@ export class VenuesController {
 	getVenueEmail(@Param('venueId') venueId: string) {
 		return this.venuesService.getVenueEmail(venueId)
 	}
+
+	@Get('log-encrypted-sample/:venueId')
+	@ApiParam({ name: 'venueId', example: '572259faf1fb67ed11c1695a' })
+	logEncryptedLogSample(@Param('venueId') venueId: string) {
+		return this.venuesService.logEncryptedLogSample(venueId)
+	}
 }

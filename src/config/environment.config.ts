@@ -24,7 +24,11 @@ export default () => ({
 
 	datadog: {
 		apiKey: process.env.DATADOG_API_KEY,
+		serviceName: process.env.DATADOG_SERVICE_NAME,
 	},
-
+	keyvault: {
+		url: process.env.KEYVAULT_URL,
+		name: process.env.PUBLIC_KEY_NAME,
+	},
 	venuesDefaultTz: 'America/Sao_Paulo',
 })
